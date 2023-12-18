@@ -1,5 +1,5 @@
 para criar o diretorio e com o prejeto e database mysql
-### npx typeorm init --name cangame --database mysql
+### npx typeorm init --name deliciaRapida --database mysql
 
 remover o mysql
 ### npm remove mysql
