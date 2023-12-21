@@ -2,7 +2,7 @@
    "name": "lanchonete",
    "version": "0.0.1",
    "description": "Crud Sistema de Lanchonete - Delícia Rápida",
-   "author": "Alex Lopes, Fernando Almeida, Jorge Braga",
+   "author": "Alex Klênio Ferreira Lopes, Fernando Fernando Alan Fernandes de Almeida, Jorge Alexandre Braz Braga",
    "type": "commonjs",
    "devDependencies": {
       "@types/bcrypt": "^5.0.2",

@@ -28,7 +28,8 @@ routers.put('/pedido/:id', updatePedido); //http://localhost:3001/pedido/2
 routers.delete('/pedido/:id', deletePedido); //http://localhost:3001/pedido/4
 
 routers.get('/pedidofechado/:id', getPedidoFechadoById); //http://localhost:3001/pedidofechado/2
-routers.get('/fechamentocaixa', getFechamentoCaixa); //http://localhost:3001/fechamentocaixa?dataInicial=2023-12-14&dataFinal=2023-12-14
+routers.get('/fechamentocaixa/dataInicial/:dataInicial/dataFinal/:dataFinal', getFechamentoCaixa);
+//http://localhost:3001/fechamentocaixa/dataInicial/2023-12-17/dataFinal/2023-12-17
 routers.get('/pedidos/:status', getPedidosStatus); //http://localhost:3001/pedidos/entregue
 
 

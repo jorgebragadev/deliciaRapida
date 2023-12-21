@@ -125,9 +125,6 @@ export const getFechamentoCaixa = async (
   req: Request,
   res: Response
 ): Promise<Response> => {
-  const dataInicial: Date | undefined = new Date();
-  const dataFinal: Date | undefined = new Date();
-
   const formatarData = (data: Date | undefined): string => {
     return data !== undefined
       ? `${String(data.getDate()).padStart(2, "0")}/${String(
@@ -135,54 +132,35 @@ export const getFechamentoCaixa = async (
         ).padStart(2, "0")}/${String(data.getFullYear())}`
       : "";
   };
+
   try {
-    let totalDoCaixa = 0;
-
-    const dataInicialParam: string | undefined = req.query.dataInicial as
-      | string
-      | undefined;
-    const dataFinalParam: string | undefined = req.query.dataFinal as
-      | string
-      | undefined;
-
-    const dataAtual = new Date();
+    const dataInicialParam: string | undefined = req.params.dataInicial;
+    const dataFinalParam: string | undefined = req.params.dataFinal;
 
     const dataInicial: Date | undefined = dataInicialParam
       ? new Date(dataInicialParam + "T00:00:00.000")
-      : new Date(
-          dataAtual.getFullYear(),
-          dataAtual.getMonth(),
-          dataAtual.getDate(),
-          0,
-          0,
-          0,
-          0
-        );
+      : undefined;
 
     const dataFinal: Date | undefined = dataFinalParam
       ? new Date(dataFinalParam + "T23:59:59.999")
       : undefined;
 
+    if (!dataInicial || !dataFinal) {
+      return res.status(400).json({ error: "Parâmetros de data ausentes ou inválidos." });
+    }
+
     const pedidos = await PedidoRepository.getPedidos();
 
     const pedidosFiltrados = pedidos.filter((pedido) => {
-      if (dataInicial && dataFinal) {
-        const pedidoData = new Date(pedido.data);
-        return pedidoData >= dataInicial && pedidoData <= dataFinal;
-      } else if (dataInicial) {
-        return (
-          new Date(pedido.data).toLocaleDateString() ===
-          dataInicial.toLocaleDateString()
-        );
-      } else if (dataFinal) {
-        return (
-          new Date(pedido.data).toLocaleDateString() ===
-          dataFinal.toLocaleDateString()
-        );
-      }
-      return true;
+      const pedidoData = new Date(pedido.data);
+      return pedidoData >= dataInicial && pedidoData <= dataFinal;
     });
 
+    if (pedidosFiltrados.length === 0) {
+      return res.status(404).json({ message: "Não existem vendas no período de data especificado." });
+    }
+
+    let totalDoCaixa = 0;
     const somasPorFormaPagamento: Record<string, string> = {};
 
     somasPorFormaPagamento["Data Inicial"] = formatarData(dataInicial);
@@ -219,6 +197,8 @@ export const getFechamentoCaixa = async (
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
+
 
 export const getPedidoFechadoById = async (
   req: Request,
